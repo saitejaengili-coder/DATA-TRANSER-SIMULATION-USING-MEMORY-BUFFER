@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int main(void) {
+    const char *source =
+        "This is sample data inside send.txt.\n"
+        "You are transferring this file using an in-memory simulation.\n"
+        "Each chunk is copied and progress is shown.\n";
+    size_t src_len = strlen(source);
+    /* allocate destination buffer */
+    char *dest = malloc(src_len + 1);  // <-- FIXED
+    if (!dest) {
+        perror("malloc");
+        return 1;
+    }
+    size_t chunk = 16; /* simulate chunk-by-chunk transfer */
+    size_t copied = 0;
+    printf("=== IN-MEMORY FILE TRANSFER SIMULATION ===\n\n");
+    printf("Total bytes to transfer: %zu\n\n", src_len);
+    while (copied < src_len) {
+        size_t to_copy = (src_len - copied) < chunk ? (src_len - copied) : chunk;
+        memcpy(dest + copied, source + copied, to_copy);
+        copied += to_copy;
+        printf("Transferred %zu / %zu bytes...\n", copied, src_len);
+    }
+    dest[src_len] = '\0'; /* null-terminate */
+    printf("\n=== TRANSFER COMPLETE ===\n");
+    printf("Received content (preview):\n\n%s\n", dest);
+    free(dest);
+    return 0;
+}
